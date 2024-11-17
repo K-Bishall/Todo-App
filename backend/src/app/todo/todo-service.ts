@@ -25,7 +25,7 @@ export async function updateTodoItem(id: string, data: TodoRequest): Promise<Tod
 export async function getAllTodoItems({ isDone }: TodoFilters): Promise<ListResult<Todo>> {
   const { todoRepo } = await getDB();
 
-  const filters = isDone ? { isDone: true } : { dateTime: { $gt: new Date() } };
+  const filters = { isDone: isDone ?? false };
 
   const todoItemsPromise = todoRepo.findAll({
     where: filters,
