@@ -27,3 +27,9 @@ export async function getAllTodoItems({ isDone }: TodoFilters): Promise<ListResu
 
   return { data: todoItems, meta: { totalCount, currentPageCount: todoItems.length } };
 }
+
+export async function deleteTodoItem(id: string): Promise<void> {
+  const { todoRepo } = await getDB();
+
+  await todoRepo.nativeDelete({ id });
+}

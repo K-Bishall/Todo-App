@@ -2,7 +2,7 @@ import { Router } from 'express';
 import validateRequest from '@/middlewares/validateRequest';
 import { requestHandler } from '@/common/request-handler';
 import { todoFiltersSchema, todoSchema } from '@/app/todo/schemas/todo-schema';
-import { createTodoItem, getAllTodoItems } from '@/app/todo/todo-controller';
+import { createTodoItem, deleteTodoItem, getAllTodoItems } from '@/app/todo/todo-controller';
 
 const todoRoutes = Router();
 
@@ -13,5 +13,7 @@ todoRoutes.get(
   validateRequest({ query: todoFiltersSchema }),
   requestHandler(getAllTodoItems),
 );
+
+todoRoutes.delete('/todos/:id', requestHandler(deleteTodoItem));
 
 export default todoRoutes;
