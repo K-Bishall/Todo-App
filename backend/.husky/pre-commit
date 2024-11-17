@@ -1,0 +1,13 @@
+cd backend
+
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+yarn lint-staged
+
+# Run the migration check
+yarn migration:check || {
+  echo -e "\n${YELLOW}[MIGRATIONS] ${RED}Pending migrations detected. ${YELLOW}Please run migration:create --name=some-description before committing.${NC}\n"
+  exit 1;
+}
