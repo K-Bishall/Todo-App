@@ -43,3 +43,11 @@ export async function deleteTodoItem(id: string): Promise<void> {
 
   await todoRepo.nativeDelete({ id });
 }
+
+export async function toggleTodoAsDone(id: string): Promise<void> {
+  const { em, todoRepo } = await getDB();
+
+  const todoItem = await todoRepo.findByIdOrThrow(id);
+  todoRepo.assign(todoItem, { isDone: !todoItem.isDone });
+  await em.flush();
+}

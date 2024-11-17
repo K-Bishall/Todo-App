@@ -32,3 +32,10 @@ export async function deleteTodoItem(request: Request, response: Response) {
 
   return response.sendStatus(StatusCodes.NO_CONTENT);
 }
+
+export async function toggleTodoAsDone(request: Request, response: Response) {
+  const params = request.params;
+  await todoService.toggleTodoAsDone(params.id!);
+
+  return response.sendStatus(StatusCodes.NO_CONTENT);
+}

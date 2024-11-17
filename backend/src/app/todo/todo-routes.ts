@@ -6,6 +6,7 @@ import {
   createTodoItem,
   deleteTodoItem,
   getAllTodoItems,
+  toggleTodoAsDone,
   updateTodoItem,
 } from '@/app/todo/todo-controller';
 
@@ -22,5 +23,7 @@ todoRoutes.get(
 );
 
 todoRoutes.delete('/todos/:id', requestHandler(deleteTodoItem));
+
+todoRoutes.put('/todos/:id/toggle-done', requestHandler(toggleTodoAsDone));
 
 export default todoRoutes;
