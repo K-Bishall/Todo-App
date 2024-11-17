@@ -7,3 +7,13 @@ export const todoSchema = z.object({
 });
 
 export type TodoRequest = z.infer<typeof todoSchema>;
+
+export const todoFiltersSchema = z.object({
+  isDone: z.preprocess((value) => {
+    if (typeof value === 'string') {
+      return value === 'true' ? true : value === 'false' ? false : value;
+    }
+  }, z.boolean().optional().nullable()),
+});
+
+export type TodoFilters = z.infer<typeof todoFiltersSchema>;
