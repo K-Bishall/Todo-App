@@ -10,6 +10,15 @@ export async function createTodoItem(request: Request, response: Response) {
   return response.json(todoItem);
 }
 
+export async function updateTodoItem(request: Request, response: Response) {
+  const params = request.params;
+  const id = params.id!;
+  const data: TodoRequest = request.body;
+  const todoItem = await todoService.updateTodoItem(id, data);
+
+  return response.json(todoItem);
+}
+
 export async function getAllTodoItems(request: Request, response: Response) {
   const filters: TodoFilters = request.query;
   const todoItems = await todoService.getAllTodoItems(filters);

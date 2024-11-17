@@ -12,6 +12,16 @@ export async function createTodoItem(data: TodoRequest): Promise<Todo> {
   return todoItem;
 }
 
+export async function updateTodoItem(id: string, data: TodoRequest): Promise<Todo> {
+  const { em, todoRepo } = await getDB();
+
+  const todoItem = await todoRepo.findByIdOrThrow(id);
+  todoRepo.assign(todoItem, data);
+  await em.flush();
+
+  return todoItem;
+}
+
 export async function getAllTodoItems({ isDone }: TodoFilters): Promise<ListResult<Todo>> {
   const { todoRepo } = await getDB();
 
