@@ -1,35 +1,56 @@
 import {
   ReactElement,
-  useMemo,
+  useEffect,
 } from "react";
-import { Task } from "../api";
+import {
+  getAllTodosQueryKey,
+  Task,
+  useCreateTodo,
+  useEditTodo,
+} from "../api";
 import {
   SubmitHandler,
   useForm,
 } from "react-hook-form";
+import { useQueryClient } from "react-query";
 
 interface CreateTaskProps {
   task?: Task;
+  onSuccess?: () => void;
 }
 
 type FormState = Pick<Task, "title" | "description" | "dateTime">
 
 
-function CreateTask({ task }: CreateTaskProps): ReactElement {
+function CreateTask({ task, onSuccess }: CreateTaskProps): ReactElement {
+  const queryClient = useQueryClient();
+  const { mutateAsync: createTodo } = useCreateTodo();
+  const { mutateAsync: editTodo } = useEditTodo();
+
   const {
     register,
     handleSubmit,
     reset,
-  } = useForm<FormState>({
-    defaultValues: useMemo(() => task, [task]),
-  });
+  } = useForm<FormState>();
 
-  const onSubmit: SubmitHandler<FormState> = (data: FormState) => {
+  useEffect(() => {
+    reset(task);
+  }, [reset, task]);
+
+  const onSubmit: SubmitHandler<FormState> = async (data: FormState) => {
+    if (task) {
+      await editTodo({ id: task.id, ...data });
+    } else {
+      await createTodo(data);
+    }
+
+    await queryClient.invalidateQueries(getAllTodosQueryKey());
+
+    onSuccess?.();
     reset();
   };
 
   return (
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     <form onSubmit={handleSubmit(onSubmit)} className="my-5 rounded-lg p-3 border border-orange-500 flex flex-col">
       <input {...register("title", { required: true })} type="text" placeholder="Title"
              className="font-medium text-lg border-b" />

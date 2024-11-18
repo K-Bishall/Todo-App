@@ -5,39 +5,40 @@ import {
 import TodoItem from "../components/TodoItem.tsx";
 import cn from "../utils/cn.ts";
 import CreateTask from "../components/CreateTask.tsx";
-import { Task } from "../api";
+import {
+  getAllTodosQueryKey,
+  Task,
+  useDeleteTodo,
+  useGetAllTodos,
+  useToggleTodoAsDone,
+} from "../api";
+import { useQueryClient } from "react-query";
 
-const task1 = {
-  id: "1",
-  title: "Todo 1",
-  "description": "Some nice and long description. Some nice and long description. Some nice and long description. Some nice and long description",
-  dateTime: new Date(),
-  isDone: false,
-};
-const task3 = {
-  id: "1",
-  title: "Todo 1",
-  "description": "Some nice and long description. Some nice and long description. Some nice and long description. Some nice and long description",
-  dateTime: new Date("2024-11-17"),
-  isDone: false,
-};
-const task2 = {
-  id: "2",
-  title: "Todo 111",
-  "description": "Some nice and long description",
-  dateTime: new Date(),
-  isDone: true,
-};
 
 function TodoPage(): ReactElement {
+  const queryClient = useQueryClient();
+
   const [showDone, setShowDone] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task>();
 
-  const tasks = [task1, task2, task3, task1, task2, task3, task1, task2];
+  const { data: allTasks } = useGetAllTodos({ isDone: showDone });
+  const { mutateAsync: deleteTodo } = useDeleteTodo();
+  const { mutateAsync: toggleDone } = useToggleTodoAsDone();
+
+  const handleDelete = async (task: Task) => {
+    await deleteTodo(task.id);
+    await queryClient.invalidateQueries(getAllTodosQueryKey());
+  };
+
+  const handleDone = async (task: Task) => {
+    await toggleDone(task.id);
+    await queryClient.invalidateQueries(getAllTodosQueryKey());
+  };
+
 
   return (
     <div className="mt-5">
-      <CreateTask task={selectedTask} />
+      <CreateTask task={selectedTask} onSuccess={() => setSelectedTask(undefined)} />
 
       <div className="flex justify-end">
         <button
@@ -46,8 +47,11 @@ function TodoPage(): ReactElement {
         </button>
       </div>
 
-      <div className="flex flex-col mt-3 p-8 pt-4 rounded-xl bg-orange-50 h-[70vh] overflow-y-scroll no-scrollbar">
-        {tasks.map((it, index) => <TodoItem key={index} task={it} onClickEdit={() => setSelectedTask(it)} />)}
+      <div className="flex flex-col mt-3 p-8 pt-4 rounded-xl bg-orange-50 h-[60vh] overflow-y-scroll no-scrollbar">
+        {(allTasks?.data ?? []).map((it, index) => <TodoItem key={index} task={it}
+                                                             onClickEdit={() => setSelectedTask(it)}
+                                                             onClickDelete={() => handleDelete(it)}
+                                                             onCheck={() => handleDone(it)} />)}
       </div>
     </div>
   );
