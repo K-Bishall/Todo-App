@@ -29,3 +29,7 @@
         scrollbar-width: none; /* Firefox */
     }
 }
+
+input, textarea {
+    @apply outline-none p-2 bg-transparent
+}

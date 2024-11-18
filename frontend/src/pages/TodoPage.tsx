@@ -4,6 +4,8 @@ import {
 } from "react";
 import TodoItem from "../components/TodoItem.tsx";
 import cn from "../utils/cn.ts";
+import CreateTask from "../components/CreateTask.tsx";
+import { Task } from "../api";
 
 const task1 = {
   id: "1",
@@ -29,11 +31,14 @@ const task2 = {
 
 function TodoPage(): ReactElement {
   const [showDone, setShowDone] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task>();
 
   const tasks = [task1, task2, task3, task1, task2, task3, task1, task2];
 
   return (
     <div className="mt-5">
+      <CreateTask task={selectedTask} />
+
       <div className="flex justify-end">
         <button
           className={cn("text-sm font-medium rounded-full px-2 py-1 border-2 border-orange-500 text-orange-500 transition-colors", showDone && "bg-orange-500 text-white")}
@@ -41,8 +46,8 @@ function TodoPage(): ReactElement {
         </button>
       </div>
 
-      <div className="flex flex-col mt-3 p-8 pt-4 rounded-xl bg-orange-50 max-h-[70vh] overflow-y-scroll no-scrollbar">
-        {tasks.map((it, index) => <TodoItem key={index} task={it} />)}
+      <div className="flex flex-col mt-3 p-8 pt-4 rounded-xl bg-orange-50 h-[70vh] overflow-y-scroll no-scrollbar">
+        {tasks.map((it, index) => <TodoItem key={index} task={it} onClickEdit={() => setSelectedTask(it)} />)}
       </div>
     </div>
   );

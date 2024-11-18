@@ -24,12 +24,12 @@ function TodoItem({ task, onCheck, onClickDelete, onClickEdit }: TodoItemProps):
 
       <div className={cn("flex-grow", task.isDone && "text-gray-500")}>
         <div className="flex items-center gap-5">
-          <h3 className={cn("flex-grow font-medium text-lg -mt-1.5", task.isDone && "line-through")}>{task.title}</h3>
+          <h3 className={cn("flex-grow font-medium text-lg -mt-1.5")}>{task.title}</h3>
 
           {isOverdue && <span className="rounded-full px-3 py-1 bg-red-300 text-xs font-medium">Overdue</span>}
           <span>{format(task.dateTime, "eee, MMM dd, hh:mm aa")}</span>
         </div>
-        <p className={cn(task.isDone && "line-through", "mt-4")}>{task.description}</p>
+        <p className={cn("mt-4")}>{task.description}</p>
       </div>
 
       {!task.isDone && <EditIcon className="text-orange-500 cursor-pointer -mr-3 w-5 h-5" onClick={onClickEdit} />}
